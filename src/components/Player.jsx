@@ -7,6 +7,14 @@ export default function Player() {
   function handleClick() {
     // playerName is always a JavaScript object and playerName.current holds the component (the input in our case). Every ref has only one current
     setEnteredPlayerName(playerName.current.value);
+    /**
+     * It is not recommened to do that 'playerName.current.value = "";'. 
+     * We are manipulating the DOM directly and this is against React principles. 
+     * React is declarative not imperative. We should tell React how to clear the input value and not clear it by ourselves. 
+     * We can keep it for now, but we should not use Refs to read and set values to various components all across the App.
+     */
+    playerName.current.value = "";
+
   }
 
   return (
