@@ -1,4 +1,5 @@
 import { useImperativeHandle, useRef } from "react";
+import { createPortal } from 'react-dom';
 
 export default function ResultModal({ ref, targetTime, remainingTime, onReset }) {
     const dialog = useRef();
@@ -22,29 +23,35 @@ export default function ResultModal({ ref, targetTime, remainingTime, onReset })
     });
 
     return (
-        <dialog
-            ref={dialog}
-            className="result-modal"
-            // dialog closes by default with Esc key. In our case we want to execute onReset when dialog closes. This is why we have to add dialog onClose
-            onClose={onReset} 
-        >
-            {userLost && <h2>You lost</h2>}
-            {!userLost && <h2>Your Score: {score}</h2>}
-            <p>
-                The target time was <strong>{targetTime} seconds.</strong>
-            </p>
-            <p>
-                You stopped the timer with <strong>{formattedRemainingTime} seconds left.</strong>
-            </p>
-            {
-                /**
-                 * method="dialog" is a build-in HTML feature that closes the dialog when we press the button.
-                 * onSubmit attribute is also a build-in HTML feature that executes onReset when the form closes (when we press the button).
-                 */
-            }
-            <form method="dialog" onSubmit={onReset}>
-                <button>Close</button>
-            </form>
-        </dialog>
+        /**
+         * Creates a portal and renders this JSX component to index.html -> <div id="modal">. 
+         * We want ResultModal on top of other components and not among them. 
+         * Syntax: createPortal(JSX code, DOM element).
+         */
+        createPortal(
+            <dialog
+                ref={dialog}
+                className="result-modal"
+                // dialog closes by default with Esc key. In our case we want to execute onReset when dialog closes. This is why we have to add dialog onClose
+                onClose={onReset}
+            >
+                {userLost && <h2>You lost</h2>}
+                {!userLost && <h2>Your Score: {score}</h2>}
+                <p>
+                    The target time was <strong>{targetTime} seconds.</strong>
+                </p>
+                <p>
+                    You stopped the timer with <strong>{formattedRemainingTime} seconds left.</strong>
+                </p>
+                {
+                    /**
+                     * method="dialog" is a build-in HTML feature that closes the dialog when we press the button.
+                     * onSubmit attribute is also a build-in HTML feature that executes onReset when the form closes (when we press the button).
+                     */
+                }
+                <form method="dialog" onSubmit={onReset}>
+                    <button>Close</button>
+                </form>
+            </dialog>, document.getElementById("modal"))
     );
 }
