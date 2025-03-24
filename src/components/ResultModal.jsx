@@ -4,6 +4,7 @@ export default function ResultModal({ ref, targetTime, remainingTime, onReset })
     const dialog = useRef();
     const userLost = remainingTime <= 0;
     const formattedRemainingTime = (remainingTime / 1000).toFixed(2);
+    const score = Math.round((1 - remainingTime / (targetTime * 1000)) * 100);
 
     /**
      * We can use useImperativeHandle to encapsulate the main functionality we want from this component to a single function.
@@ -21,8 +22,14 @@ export default function ResultModal({ ref, targetTime, remainingTime, onReset })
     });
 
     return (
-        <dialog ref={dialog} className="result-modal">
+        <dialog
+            ref={dialog}
+            className="result-modal"
+            // dialog closes by default with Esc key. In our case we want to execute onReset when dialog closes. This is why we have to add dialog onClose
+            onClose={onReset} 
+        >
             {userLost && <h2>You lost</h2>}
+            {!userLost && <h2>Your Score: {score}</h2>}
             <p>
                 The target time was <strong>{targetTime} seconds.</strong>
             </p>
