@@ -15,7 +15,7 @@ export default function TimerChallenge({ title, targetTime }) {
     function handleStart() {
         timer.current = setTimeout(() => {
             setTimerExpired(true);
-            dialog.current.showModal(); // display modal when time expires
+            dialog.current.open(); // display modal when time expires
         }, targetTime * 1000);
 
         // setTimerStarted will be executed when setTimeout was set (not after 1000ms)
