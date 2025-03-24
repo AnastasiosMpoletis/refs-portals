@@ -7,6 +7,7 @@ export default function TimerChallenge({ title, targetTime }) {
      * timer will not be reset or cleared when this component re-executes.
      */
     const timer = useRef();
+    const dialog = useRef();
 
     const [timerStarted, setTimerStarted] = useState(false);
     const [timerExpired, setTimerExpired] = useState(false);
@@ -14,6 +15,7 @@ export default function TimerChallenge({ title, targetTime }) {
     function handleStart() {
         timer.current = setTimeout(() => {
             setTimerExpired(true);
+            dialog.current.showModal(); // display modal when time expires
         }, targetTime * 1000);
 
         // setTimerStarted will be executed when setTimeout was set (not after 1000ms)
@@ -26,7 +28,7 @@ export default function TimerChallenge({ title, targetTime }) {
 
     return (
         <>
-            {timerExpired && <ResultModal targetTime={targetTime} result="lost" />}
+            <ResultModal ref={dialog} targetTime={targetTime} result="lost" />
             <section className="challenge">
                 <h2>{title}</h2>
                 <p className="challenge-time">
